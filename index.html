@@ -44,7 +44,7 @@
             });
             initialize2();
         }).catch(function (err) {
-            console.log(err.name + ": " + err.message);
+            alert(err.name + ": " + err.message);
         });
     }
 
@@ -87,7 +87,7 @@
                     advanced: [{torch: true}]
                 })
                     .catch(e => alert(e));
-            }
+            }else{alert("No flash for you, try holding it righ...")}
         }
 
 
