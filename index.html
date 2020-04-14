@@ -26,8 +26,6 @@
     var hist = [];
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 
-    var constraints = {video: true, audio: false};
-
     function initialize() {
         navigator.mediaDevices.enumerateDevices().then(function (devices) {
             devices.forEach(function (device) {
@@ -60,18 +58,20 @@
         bpm = document.getElementById("bpm");
 
         // Get the webcam's stream.
-        navigator.getUserMedia(constraints, startStream, function () {
-        }).then(stream => {
-            const track = stream.getVideoTracks()[0];
-            track.applyConstraints({
-                advanced: [{torch: true}]
-            });
-        })
+        navigator.getUserMedia({
+            facingMode: ['environment'],
+            height: {ideal: 1080},
+            width: {ideal: 1920}
+        }, startStream, () => {});
     }
 
     function startStream(stream) {
         video.srcObject = stream;
         video.play();
+        const track = stream.getVideoTracks()[0]
+        track.applyConstraints({
+            advanced: [{torch: true}]
+        });
         // Ready! Let's start drawing.
         requestAnimationFrame(draw);
     }
