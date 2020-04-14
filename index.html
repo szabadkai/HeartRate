@@ -72,10 +72,25 @@
     function startStream(stream) {
         video.srcObject = stream;
         video.play();
+
         const track = stream.getVideoTracks()[0];
-        track.applyConstraints({
-            advanced: [{torch: true}]
+
+        video.addEventListener('loadedmetadata', (e) => {
+            window.setTimeout(() => (
+                onCapabilitiesReady(track.getCapabilities())
+            ), 500);
         });
+
+        function onCapabilitiesReady(capabilities) {
+            if (capabilities.torch) {
+                track.applyConstraints({
+                    advanced: [{torch: true}]
+                })
+                    .catch(e => alert(e));
+            }
+        }
+
+
         // Ready! Let's start drawing.
         requestAnimationFrame(draw);
     }
