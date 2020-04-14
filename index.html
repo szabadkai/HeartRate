@@ -26,6 +26,14 @@
     var hist = [];
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 
+    var constraints = {
+        video: {
+            facingMode: ['environment'],
+            height: {ideal: 1080},
+            width: {ideal: 1920},
+        }, audio: false
+    };
+
     function initialize() {
         navigator.mediaDevices.enumerateDevices().then(function (devices) {
             devices.forEach(function (device) {
