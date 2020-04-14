@@ -28,7 +28,7 @@
 
     var constraints = {
         video: {
-            facingMode: ['environment'],
+            facingMode: ['user','environment'],
             height: {ideal: 1080},
             width: {ideal: 1920},
         }, audio: false
@@ -66,11 +66,7 @@
         bpm = document.getElementById("bpm");
 
         // Get the webcam's stream.
-        navigator.getUserMedia({
-            facingMode: ['environment'],
-            height: {ideal: 1080},
-            width: {ideal: 1920}
-        }, startStream, () => {});
+        navigator.getUserMedia(constraints, startStream, () => {});
     }
 
     function startStream(stream) {
