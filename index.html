@@ -68,7 +68,7 @@
     function startStream(stream) {
         video.srcObject = stream;
         video.play();
-        const track = stream.getVideoTracks()[0]
+        const track = stream.getVideoTracks()[0];
         track.applyConstraints({
             advanced: [{torch: true}]
         });
