@@ -24,7 +24,7 @@
 <script>
     var video, width, height, context, graphCanvas, graphContext, bpm;
     var hist = [];
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+    navigator.getUserMedia = navigator.getUserMedia ||  navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia ;
 
     var constraints = {
         video: {
