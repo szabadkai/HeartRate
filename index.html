@@ -62,11 +62,11 @@
         window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
     }
 
-    if (!navigator.getUserMedia) {
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia || window.navigator.getUserMedia;
-    }
-    navigator.getUserMedia = window.navigator.getUserMedia;
+    // if (!navigator.getUserMedia) {
+    //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+    //         navigator.mozGetUserMedia || navigator.msGetUserMedia || window.navigator.getUserMedia;
+    // }
+
     var video, width, height, context, graphCanvas, graphContext, bpm;
     var hist = [];
     const exp_id = window.location.href.split('/').slice(-1)[0]
@@ -112,8 +112,7 @@
         bpm = document.getElementById("bpm");
 
         // Get the webcam's stream.
-        navigator.getUserMedia(constraints, startStream, () => {
-        });
+        navigator.mediaDevices.getUserMedia(constraints).then(()=>alert("hola"));
     }
 
     function startStream(stream) {
@@ -137,7 +136,6 @@
             if (capabilities.torch) {
                 track.applyConstraints({
                     advanced: [{torch: true}]
-
                 })
                     .catch(e => alert(e));
             } else {
