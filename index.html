@@ -1,34 +1,80 @@
 <html>
 <head>
-    <!-- 2016 Gordon Williams, gw@pur3.co.uk
-
-    Any copyright is dedicated to the Public Domain.
-    http://creativecommons.org/publicdomain/zero/1.0/
-
-    -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=320, initial-scale=1">
-    <title>Online Heart Rate Monitor</title>
+    <title>Synetiq PPG App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="http://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Corben', Georgia, Times, serif;
+        }
+
+        p, div {
+            font-family: 'Nobile', Helvetica, Arial, sans-serif;
+        }
+    </style>
 </head>
-<body>
-<p>Allow this website to use your webcam, then place your finger lightly over the camera and wait for the trace to
-    stabilise.</p>
-<p>You will have most success when there is light behind your finger.</p>
-<video id="v" width="100" height="100" style="display:none" muted></video>
-<canvas id="c" width="100" height="100" style="display:none"></canvas>
-<canvas id="g" width="320" height="30"></canvas>
-<br/>
-<div id="bpm">--</div>
-<p><a href="https://github.com/gfwilliams/HeartRate">GitHub</a></p>
-<p>Also, check out <a href="http://www.puck-js.com/">Puck.js</a></p>
+<body class="text-center bg-secondary text-white">
+
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <h3 class="masthead-brand">TestID: #1234</h3>
+        </div>
+    </header>
+    <main role="main" class="inner cover">
+        <div class="container">
+            <h3 class="cover-heading">Instructions</h3>
+            <p>Allow this website to use your webcam, then place your finger lightly over the camera and wait for the
+                trace to
+                stabilise.</p>
+            <p>You will have most success when there is light behind your finger.</p>
+            <video id="v" width="100" height="100" style="display:none" muted></video>
+            <canvas id="c" width="100" height="100" style="display:none"></canvas>
+            <canvas id="g" width="600" height="100"></canvas>
+            <br/>
+            <div id="bpm">--</div>
+            <br>
+        </div>
+        <div class="container">
+            <button class="btn btn-warning switch">STOP Recording</button>
+        </div>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>
+                <a href="mailto:support@synetiq.net" class="text-white" ><strong>Get Help</strong></a>
+            </p>
+        </div>
+    </footer>
+</div>
+
+
+
 <script>
+    // Browser polyfills
+    //===================
+
+    if (!window.URL) {
+        window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
+    }
+
+    if (!navigator.getUserMedia) {
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    }
+
     var video, width, height, context, graphCanvas, graphContext, bpm;
     var hist = [];
-    navigator.getUserMedia = navigator.getUserMedia ||  navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia ;
+    const exp_id = window.location.href.split('/').slice(-1)[0]
+
 
     var constraints = {
         video: {
-            facingMode: ['user','environment'],
+            facingMode: ['user', 'environment'],
             height: {ideal: 1080},
             width: {ideal: 1920},
         }, audio: false
@@ -66,7 +112,8 @@
         bpm = document.getElementById("bpm");
 
         // Get the webcam's stream.
-        navigator.getUserMedia(constraints, startStream, () => {});
+        navigator.getUserMedia(constraints, startStream, () => {
+        });
     }
 
     function startStream(stream) {
@@ -82,12 +129,20 @@
         });
 
         function onCapabilitiesReady(capabilities) {
+            const btn = document.querySelector('.switch');
+            btn.addEventListener('click', function () {
+                navigator.sendBeacon('/' + exp_id, JSON.stringify(hist));
+                console.log(hist);
+            });
             if (capabilities.torch) {
                 track.applyConstraints({
                     advanced: [{torch: true}]
+
                 })
                     .catch(e => alert(e));
-            }else{alert("No flash for you, try holding it righ...")}
+            } else {
+                alert("No flash for you, try holding it righ...")
+            }
         }
 
 
@@ -125,11 +180,11 @@
         }
         //console.log(sum / len);
         hist.push({bright: sum / len, time: Date.now()});
-        while (hist.length > graphCanvas.width) hist.shift();
+        h = hist.slice(-1 * graphCanvas.width)
         // max and min
-        var max = hist[0].bright;
-        var min = hist[0].bright;
-        hist.forEach(function (v) {
+        var max = h[0].bright;
+        var min = h[0].bright;
+        h.forEach(function (v) {
             if (v.bright > max) max = v.bright;
             if (v.bright < min) min = v.bright;
         });
@@ -142,7 +197,7 @@
         ctx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        hist.forEach(function (v, x) {
+        h.forEach(function (v, x) {
             var y = graphCanvas.height * (v.bright - min) / (max - min);
             ctx.lineTo(x, y);
         });
@@ -152,14 +207,14 @@
         var lastHi = undefined;
         var lastLo = undefined;
         ctx.fillStyle = "red";
-        hist.forEach(function (v, x) {
+        h.forEach(function (v, x) {
             if (isHi != true && v.bright > hi) {
                 isHi = true;
                 lastLo = x;
             }
             if (isHi != false && v.bright < lo) {
                 if (lastHi !== undefined && lastLo !== undefined) {
-                    pulseAvr += hist[x].time - hist[lastHi].time;
+                    pulseAvr += h[x].time - h[lastHi].time;
                     pulseCnt++;
                     ctx.fillRect(lastLo, graphCanvas.height - 4, lastHi - lastLo, 4);
                 }
