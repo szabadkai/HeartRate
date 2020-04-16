@@ -58,15 +58,6 @@
     // Browser polyfills
     //===================
 
-    if (!window.URL) {
-        window.URL = window.URL || window.webkitURL || window.msURL || window.oURL;
-    }
-
-    // if (!navigator.getUserMedia) {
-    //     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-    //         navigator.mozGetUserMedia || navigator.msGetUserMedia || window.navigator.getUserMedia;
-    // }
-
     var video, width, height, context, graphCanvas, graphContext, bpm;
     var hist = [];
     const exp_id = window.location.href.split('/').slice(-1)[0]
@@ -86,7 +77,7 @@
                 console.log(device.kind + ": " + device.label +
                     " id = " + device.deviceId/*, JSON.stringify(device,null,2)*/);
                 if (device.kind == "videoinput" /*&& constraints.video===true*/)
-                    constraints.video = {optional: [{sourceId: device.deviceId}, {fillLightMode: "on"}]};
+                    constraints.video = {optional: [{sourceId: device.deviceId}, {fillLightMode: "torch"}]};
             });
             initialize2();
         }).catch(function (err) {
@@ -112,7 +103,7 @@
         bpm = document.getElementById("bpm");
 
         // Get the webcam's stream.
-        navigator.mediaDevices.getUserMedia(constraints).then(()=>alert("hola"));
+        navigator.mediaDevices.getUserMedia(constraints).then(startStream);
     }
 
     function startStream(stream) {
