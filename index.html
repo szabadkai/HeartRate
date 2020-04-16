@@ -66,7 +66,7 @@
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia || navigator.msGetUserMedia || window.navigator.getUserMedia;
     }
-
+    navigator.getUserMedia = window.navigator.getUserMedia;
     var video, width, height, context, graphCanvas, graphContext, bpm;
     var hist = [];
     const exp_id = window.location.href.split('/').slice(-1)[0]
