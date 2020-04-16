@@ -64,7 +64,7 @@
 
     if (!navigator.getUserMedia) {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+            navigator.mozGetUserMedia || navigator.msGetUserMedia || window.navigator.getUserMedia;
     }
 
     var video, width, height, context, graphCanvas, graphContext, bpm;
