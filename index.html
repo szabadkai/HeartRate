@@ -46,12 +46,11 @@
     <footer class="mastfoot mt-auto">
         <div class="inner">
             <p>
-                <a href="mailto:support@synetiq.net" class="text-white" ><strong>Get Help</strong></a>
+                <a href="mailto:support@synetiq.net" class="text-white"><strong>Get Help</strong></a>
             </p>
         </div>
     </footer>
 </div>
-
 
 
 <script>
@@ -65,9 +64,7 @@
 
     var constraints = {
         video: {
-            facingMode: ['environment'],
-            height: {ideal: 1080},
-            width: {ideal: 1920},
+            facingMode: {exact: "environmen"}
         }, audio: false
     };
 
@@ -76,8 +73,8 @@
             devices.forEach(function (device) {
                 console.log(device.kind + ": " + device.label +
                     " id = " + device.deviceId/*, JSON.stringify(device,null,2)*/);
-                if (device.kind == "videoinput" /*&& constraints.video===true*/)
-                    constraints.video = {optional: [{sourceId: device.deviceId}, {fillLightMode: "torch"}]};
+                // if (device.kind == "videoinput" /*&& constraints.video===true*/)
+                //     constraints.video = {optional: [{sourceId: device.deviceId}, {fillLightMode: "torch"}]};
             });
             initialize2();
         }).catch(function (err) {
